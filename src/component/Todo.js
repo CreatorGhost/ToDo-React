@@ -20,7 +20,6 @@ const Todo =()=>{
     const [items, setItems] = useState(getLocalItmes());
 
     const addItem =()=>{
-            console.log(inputData)
             if(inputData){
                 setItems([...items,inputData])
                 setInputData("");
@@ -32,9 +31,19 @@ const Todo =()=>{
     {
     return idx !==id;
     })
-
     setItems(updateItem)
     }
+    const editItem=(id)=>{
+        const updateItem= items.filter((ele,idx)=>
+        {
+        return idx ===id;
+        })
+        const selectedItem=items.find(item=> item.id === id);
+        console.log(selectedItem+" This Is String "+updateItem+ " "+inputData);
+
+        
+    }
+
 
     // Deleting all the items
     const removeAll=()=>{
@@ -64,6 +73,7 @@ const Todo =()=>{
                                 return (
                                     <div className="eachItem" key={ind}>
                                         <h3>{ elem }</h3>
+                                        <i className="fa fa-pencil" title="Delete" onClick={() => editItem(ind)}></i>
                                         <i className="far fa-trash-alt add-btn" title="Delete Item" onClick={() => deleteItem(ind)}></i>
                                     </div>
                                 )
