@@ -18,30 +18,51 @@ const getLocalItmes = () => {
 const Todo =()=>{
     const [inputData, setInputData] = useState('');
     const [items, setItems] = useState(getLocalItmes());
-
+    const[toggleSubmit,setToggleSubmit]=useState(true);
+    const[isEdit,setEdit]=useState(null);
     const addItem =()=>{
-            if(inputData){
-                setItems([...items,inputData])
+        if (!inputData)
+        {
+            alert("Please enter data");
+        }
+        else if (inputData && !toggleSubmit){
+            setItems(
+                items.map((elem)=>{
+                    if(elem.id===isEdit){
+                        return {...elem,name:inputData}
+                    }
+                    return elem
+                })
+            )
+            setToggleSubmit(true);
+            setInputData(" ")
+            setEdit(null);
+        }    
+        else{
+                const allInputs={id: new Date().getTime().toString(),name:inputData}
+                setItems([...items,allInputs])
                 setInputData("");
         }
     }
     //For Item Deletion
-    const deleteItem=(id)=>{
-    const updateItem= items.filter((ele,idx)=>
+    const deleteItem=(idex)=>{
+    const updateItem= items.filter((ele)=>
     {
-    return idx !==id;
+    return idex !==ele.id;
     })
     setItems(updateItem)
     }
-    const editItem=(id)=>{
-        const updateItem= items.filter((ele,idx)=>
-        {
-        return idx ===id;
-        })
-        const selectedItem=items.find(item=> item.id === id);
-        console.log(selectedItem+" This Is String "+updateItem+ " "+inputData);
 
+    const editItem=(index)=>{
         
+        console.log("This is the "+index)
+        let editing=items.find((elem)=>{
+            return elem.id===index;
+        });
+       // console.log(editing.name+" : ---- :")
+        setToggleSubmit(false);
+        setInputData(editing.name)
+        setEdit(index);
     }
 
 
@@ -63,18 +84,21 @@ const Todo =()=>{
                 <div className="add-item">
                     <input type="text" placeholder=" Add Items...✍"
                     value={inputData}
-                    onChange={(e)=>setInputData(e.target.value)}
-                    />
-                    <i className="fa fa-plus add-btn" title="Add Item" onClick={addItem}></i>
+                    onChange={(e)=>setInputData(e.target.value)}/>
+                    { toggleSubmit ?<i className="fa fa-plus add-btn" title="Add Item" onClick={addItem}></i>
+                        :<i className="fa fa-edit add-btn" title="Add Item" onClick={addItem}></i>
+                        }
                 </div>
                 <div className="showItems">
                 {
-                            items.map((elem, ind) => {
+                            items.map((elem) => {
                                 return (
-                                    <div className="eachItem" key={ind}>
-                                        <h3>{ elem }</h3>
-                                        <i className="fa fa-pencil" title="Delete" onClick={() => editItem(ind)}></i>
-                                        <i className="far fa-trash-alt add-btn" title="Delete Item" onClick={() => deleteItem(ind)}></i>
+                                    <div className="eachItem" key={elem.id}>
+                                        <h3>{ elem.name }</h3>
+                                        <div className="todo-btn">
+                                            <i className="far fa-edit " title="Edit Items" onClick={() => editItem(elem.id)}></i>
+                                            <i className="far fa-trash-alt add-btn" title="Delete Item" onClick={() => deleteItem(elem.id)}></i>
+                                        </div>
                                     </div>
                                 )
                             })
