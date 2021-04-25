@@ -1,13 +1,23 @@
 import React ,{useEffect, useState} from 'react'
 import logo from '../images/todo.svg'
 import "../App.css"
+// to get the data from Local Storages
 
+const getLocalItmes = () => {
+    let list = localStorage.getItem('lists');
+    console.log(list);
+
+    if (list) {
+        return JSON.parse(localStorage.getItem('lists'));
+    } else {
+        return [];
+    }
+}
 
 
 const Todo =()=>{
     const [inputData, setInputData] = useState('');
-    const [items, setItems] = useState([]);
-
+    const [items, setItems] = useState(getLocalItmes());
 
     const addItem =()=>{
             console.log(inputData)
@@ -16,13 +26,17 @@ const Todo =()=>{
                 setInputData("");
         }
     }
+    //For Item Deletion
     const deleteItem=(id)=>{
     const updateItem= items.filter((ele,idx)=>
     {
     return idx !==id;
     })
+
     setItems(updateItem)
     }
+
+    // Deleting all the items
     const removeAll=()=>{
         setItems([]);
     }
